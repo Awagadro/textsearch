@@ -1,6 +1,7 @@
 package dkravchuk.textsearch.search;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -34,6 +35,12 @@ public class Search {
 		final TopDocs search = indexSearcher.search(query, limit);
 		final ScoreDoc[] hits = search.scoreDocs;
 		showHits(hits);
+	}
+
+	public HashMap<String, Double> getSearchResults(final String toSearch) throws IOException, ParseException {
+		HashMap<String, Double> searchResults = new HashMap();
+
+		return searchResults;
 	}
 
 	public void fuzzySearch(final String toSearch) throws IOException, ParseException {

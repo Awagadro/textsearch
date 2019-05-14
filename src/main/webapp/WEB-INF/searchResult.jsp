@@ -5,7 +5,7 @@
 </head>
 <body>
 	<ol>
-		<li th:each="user : ${searchResults}"><b><span
+		<li th:each="docItem : ${searchResults}"><b><span
 				th:text="${document.title}"></span></b> - <span
 			th:text="${document.relevanceScore}"></span> -</li>
 	</ol>

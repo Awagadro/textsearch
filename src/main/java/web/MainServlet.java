@@ -3,6 +3,7 @@ package web;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,30 +24,44 @@ import index.DocItemIndexer;
 
 @WebServlet(name = "MainServlet", urlPatterns = "/search")
 public class MainServlet extends HttpServlet {
+	public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
+	private final Random rnd = new Random(); // to generate safe name for index folder. After tests we removing folders
+	private final DocItemIndexer indexer = new DocItemIndexer(TMP_DIR + "/tutorial_test" + rnd.nextInt());
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		final String textToSearch = req.getParameter("q");
 
-		final String TMP_DIR = System.getProperty("java.io.tmpdir");
-		final Random rnd = new Random(); // to generate safe name for index folder. After tests we removing folders
-		final DocItemIndexer indexer = new DocItemIndexer(TMP_DIR + "/tutorial_test" + rnd.nextInt());
 		final List<Document> documents;
 		documents = readFiles();
 		indexer.index(true, documents); // create index
 
+		List<DocItem> searchResults = new ArrayList();
+
 		final Search searchWith = new Search(indexer.readIndex());
 		try {
-			searchWith.fuzzySearch(textToSearch);
+			searchResults = searchWith.getSearchResults(textToSearch);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			PrintWriter pw = resp.getWriter();
+			pw.println("<H1>К сожалению, поиск не дал результатов</H1>");
+			pw.close();
+			return;
 		}
 		FileUtils.deleteQuietly(new File(indexer.getPathToIndexFolder())); // remove indexes
-		
-		
-		
-		getServletContext().getRequestDispatcher("/searchResult.jsp").forward(req, resp);
-	
-	
+
+		resp.setContentType("text/html;charset=utf-8");
+		PrintWriter pw = resp.getWriter();
+		pw.println("<H1>Результаты поиска:</H1>");
+
+		for (DocItem item : searchResults) {
+			pw.printf("<title>%s</title>", item.getTitle());
+			pw.println();
+		}
+		pw.close();
+
+		// getServletContext().getRequestDispatcher("/searchResult.jsp").forward(req,
+		// resp);
+
 	}
 
 	private List<Document> readFiles() throws IOException {
@@ -58,7 +73,7 @@ public class MainServlet extends HttpServlet {
 		// получаем все вложенные объекты в каталоге
 		for (File file : dir.listFiles()) {
 
-			DocItem docItem = new DocItem();
+			DocItem docItem = new DocItem(null, null);
 			docItem.setTitle(file.getName()); // присваиваем каждому документу имя
 
 			// считываем содержимое

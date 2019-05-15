@@ -48,7 +48,7 @@ public class SearchTest {
 		// получаем все вложенные объекты в каталоге
 		for (File file : dir.listFiles()) {
 
-			DocItem docItem = new DocItem();
+			DocItem docItem = new DocItem(null, null);
 			docItem.setTitle(file.getName()); // присваиваем каждому документу имя
 
 			// считываем содержимое

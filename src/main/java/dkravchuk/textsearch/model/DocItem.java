@@ -7,6 +7,12 @@ public class DocItem {
 	private String title;
 	private String content;
 
+	public DocItem(String title, String content) {
+		super();
+		this.title = title;
+		this.content = content;
+	}
+
 	public Document convertToDocument() {
 		return DocItemToDocument.createWith(title, content);
 	}

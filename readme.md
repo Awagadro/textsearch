@@ -1,1 +1,1 @@
-Type the url http://localhost:8080/search?q=some text to search: a search will be performed for the query text "some text to search"
+Для запуска ввести  url http://http://localhost:8080/textsearch-1.0/search?q=some text to search: вместо "some text to search" нужно ввести текст для поиска

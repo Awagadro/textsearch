@@ -1,4 +1,4 @@
-package index;
+package dkravchuk.textsearch.index;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;

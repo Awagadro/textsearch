@@ -1,4 +1,4 @@
-package index;
+package dkravchuk.textsearch.index;
 
 import java.io.IOException;
 import java.nio.file.Paths;

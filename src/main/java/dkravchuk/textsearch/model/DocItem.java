@@ -1,7 +1,8 @@
 package dkravchuk.textsearch.model;
 
 import org.apache.lucene.document.Document;
-import index.DocItemToDocument;
+
+import dkravchuk.textsearch.index.DocItemToDocument;
 
 public class DocItem {
 	private String title;

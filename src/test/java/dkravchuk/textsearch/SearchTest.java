@@ -1,4 +1,4 @@
-package dkravchuk.textsearch.search;
+package dkravchuk.textsearch;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,8 +13,9 @@ import org.apache.lucene.document.Document;
 import org.junit.After;
 import org.junit.Test;
 
+import dkravchuk.textsearch.index.DocItemIndexer;
 import dkravchuk.textsearch.model.DocItem;
-import index.DocItemIndexer;
+import dkravchuk.textsearch.search.Search;
 
 public class SearchTest {
 	public static String TMP_DIR = System.getProperty("java.io.tmpdir");
@@ -43,7 +44,7 @@ public class SearchTest {
 		// создаем коллекцию для всех документов в хранилище
 		List<Document> documents = new ArrayList();
 		List docItems = new ArrayList();
-		File dir = new File("filestore");
+		File dir = new File("src\\test\\resources\\dkravchuk\\textSearch\\filestore");
 
 		// получаем все вложенные объекты в каталоге
 		for (File file : dir.listFiles()) {

@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.ScoreDoc;
 import org.junit.After;
 import org.junit.Test;
 
@@ -28,11 +29,43 @@ public class SearchTest {
 	}
 
 	@Test
-	public void fuzzySearch() throws Exception {
+	public void basicSearch() throws Exception {
+		System.out.println("----------basicSearch-----------");
+
 		indexer.index(true, documents); // create index
 
 		final Search searchWith = new Search(indexer.readIndex());
-		searchWith.fuzzySearch("сказка");
+		ScoreDoc[] searchResults = searchWith.getHits("салтан");
+		searchWith.showHits(searchResults);
+
+		// final IndexReader reader = searchWith.reader;
+
+		// ScoreDoc[] searchResults;
+		// int i = 1;
+		// try {
+		// searchResults = searchWith.getHits("салтан");
+		// for (ScoreDoc item : searchResults) {
+		// final String title = reader.document(item.doc).get("title");
+		// System.out.printf("<title>%s: %s</title>", i, title);
+		// i++;
+		// System.out.println();
+		// }
+		// } catch (ParseException e) {
+		// System.out.println("<H1>поиск не дал результатов</H1>");
+		// }
+
+	}
+
+	@Test
+	public void searchWithMistake() throws Exception {
+		System.out.println("----------seasearchWithMistake-----------");
+
+		indexer.index(true, documents); // create index
+
+		final Search searchWith = new Search(indexer.readIndex());
+		ScoreDoc[] searchResults = searchWith.getHits("солтан");
+		searchWith.showHits(searchResults);
+
 	}
 
 	@After

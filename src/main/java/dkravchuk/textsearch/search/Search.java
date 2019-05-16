@@ -17,7 +17,7 @@ import dkravchuk.textsearch.model.DocItem;
 
 public class Search {
 	public static final int DEFAULT_LIMIT = 10; // how many results to return
-	private final IndexReader reader;
+	public final IndexReader reader;
 
 	public Search(IndexReader reader) {
 		this.reader = reader;
@@ -40,8 +40,7 @@ public class Search {
 		showHits(hits);
 	}
 
-	public List<DocItem> getSearchResults(final String toSearch) throws IOException, ParseException {
-		List<DocItem> searchResults = new ArrayList();
+	public ScoreDoc[] getHits(final String toSearch) throws IOException, ParseException {
 
 		final IndexSearcher indexSearcher = new IndexSearcher(reader);
 		final Term term = new Term("content", toSearch);
@@ -49,20 +48,14 @@ public class Search {
 		final Query query = new FuzzyQuery(term, maxEdits);
 		final TopDocs search = indexSearcher.search(query, DEFAULT_LIMIT);
 		final ScoreDoc[] hits = search.scoreDocs;
-		for (ScoreDoc hit : hits) {
-			final String title = reader.document(hit.doc).get("title");
-			final String content = reader.document(hit.doc).get("content");
-
-			searchResults.add(new DocItem(title, content));
-		}
-		return searchResults;
+		return hits;
 	}
 
 	public void fuzzySearch(final String toSearch) throws IOException, ParseException {
 		fuzzySearch(toSearch, "content", DEFAULT_LIMIT);
 	}
 
-	private void showHits(final ScoreDoc[] hits) throws IOException {
+	public void showHits(final ScoreDoc[] hits) throws IOException {
 		if (hits.length == 0) {
 			System.out.println("\n\tНичего не найдено");
 			return;

@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.search.ScoreDoc;
 
 import dkravchuk.textsearch.index.DocItemIndexer;
 import dkravchuk.textsearch.model.DocItem;
@@ -28,20 +30,19 @@ public class MainServlet extends HttpServlet {
 	public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 	private final Random rnd = new Random(); // to generate safe name for index folder. After tests we removing folders
 	private final DocItemIndexer indexer = new DocItemIndexer(TMP_DIR + "/tutorial_test" + rnd.nextInt());
+	List<Document> documents;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		final String textToSearch = req.getParameter("q");
 
-		final List<Document> documents;
 		documents = readFiles();
 		indexer.index(true, documents); // create index
-
-		List<DocItem> searchResults = new ArrayList();
-
 		final Search searchWith = new Search(indexer.readIndex());
+		final IndexReader reader = searchWith.reader;
+
 		try {
-			searchResults = searchWith.getSearchResults(textToSearch);
+			ScoreDoc[] searchResults = searchWith.getHits(textToSearch);
 		} catch (ParseException e) {
 			PrintWriter pw = resp.getWriter();
 			pw.println("<H1>К сожалению, поиск не дал результатов</H1>");
@@ -53,12 +54,22 @@ public class MainServlet extends HttpServlet {
 		PrintWriter pw = resp.getWriter();
 		pw.println("<H1>Результаты поиска:</H1>");
 
-		pw.println("Искали текст: " + textToSearch); // удалить
+		pw.println("Искали текст: " + textToSearch);
 
-		for (DocItem item : searchResults) {
-			pw.printf("<title>%s</title>", item.getTitle());
-			pw.println();
+		ScoreDoc[] searchResults;
+		int i = 1;
+		try {
+			searchResults = searchWith.getHits(textToSearch);
+			for (ScoreDoc item : searchResults) {
+				final String title = reader.document(item.doc).get("title");
+				pw.printf("%s: %s", i, title);
+				i++;
+				pw.println();
+			}
+		} catch (ParseException e) {
+			pw.println("<H1>поиск не дал результатов</H1>");
 		}
+
 		pw.close();
 
 		FileUtils.deleteQuietly(new File(indexer.getPathToIndexFolder())); // remove indexes
@@ -71,7 +82,6 @@ public class MainServlet extends HttpServlet {
 
 		ServletContext context = getServletContext();
 		String fullPath = context.getRealPath("filestore");
-
 		File dir = new File(fullPath);
 
 		// получаем все вложенные объекты в каталоге

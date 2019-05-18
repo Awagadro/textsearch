@@ -1,1 +1,6 @@
-Для запуска ввести  url http://localhost:8080/textsearch-1.0/search?q=some text to search: вместо "some text to search" нужно ввести текст для поиска
+веб приложение для поиска документов по ключевым фразам.
+документы размещаются в папке filestore
+
+Для запуска ввести  url http://localhost:8080/textsearch-1.0/search?q=some text: вместо "some text" нужно ввести текст для поиска
+
+если я что-то сделал неправильно, пожалуйста, сообщите мне, чтобы в будущем я делал меньше ошибок: awagadrog@gmail.com

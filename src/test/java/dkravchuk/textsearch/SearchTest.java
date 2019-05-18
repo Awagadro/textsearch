@@ -38,22 +38,6 @@ public class SearchTest {
 		ScoreDoc[] searchResults = searchWith.getHits("салтан");
 		searchWith.showHits(searchResults);
 
-		// final IndexReader reader = searchWith.reader;
-
-		// ScoreDoc[] searchResults;
-		// int i = 1;
-		// try {
-		// searchResults = searchWith.getHits("салтан");
-		// for (ScoreDoc item : searchResults) {
-		// final String title = reader.document(item.doc).get("title");
-		// System.out.printf("<title>%s: %s</title>", i, title);
-		// i++;
-		// System.out.println();
-		// }
-		// } catch (ParseException e) {
-		// System.out.println("<H1>поиск не дал результатов</H1>");
-		// }
-
 	}
 
 	@Test
